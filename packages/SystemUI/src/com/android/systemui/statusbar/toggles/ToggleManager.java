@@ -87,12 +87,14 @@ public class ToggleManager {
     public static final String NAVBAR_HIDE_TOGGLE = "NAVBARHIDE";
     public static final String QUICKRECORD_TOGGLE = "QUICKRECORD";
     public static final String QUIETHOURS_TOGGLE = "QUIETHOURS";
+    public static final String STATUSBAR_TOGGLE = "STATUSBAR";
     public static final String PIE_TOGGLE = "PIE";
     public static final String SLEEP_TOGGLE = "SLEEP";
     public static final String CARBON_TOGGLE = "CARBON";
     public static final String TRDS_TOGGLE = "TRDS";
     public static final String POWERMENU_TOGGLE = "POWERMENU";
-    public static final String XPOSED_TOGGLE = "XPOSED";
+    public static final String SCREENSHOT_TOGGLE = "SCREENSHOT";
+    public static final String CUSTOM_TOGGLE = "CUSTOM";
 
     private int mStyle;
 
@@ -141,12 +143,14 @@ public class ToggleManager {
             toggleMap.put(NAVBAR_HIDE_TOGGLE, NavbarHideToggle.class);
             toggleMap.put(QUICKRECORD_TOGGLE, QuickRecordToggle.class);
             toggleMap.put(QUIETHOURS_TOGGLE, QuietHoursToggle.class);
+            toggleMap.put(STATUSBAR_TOGGLE, StatusbarToggle.class);
             toggleMap.put(PIE_TOGGLE, PieToggle.class);
             toggleMap.put(SLEEP_TOGGLE, SleepToggle.class);
             toggleMap.put(CARBON_TOGGLE, CarbonToggle.class);
             toggleMap.put(TRDS_TOGGLE, TRDSToggle.class);
             toggleMap.put(POWERMENU_TOGGLE, PowerMenuToggle.class);
-            toggleMap.put(XPOSED_TOGGLE, XposedToggle.class);
+            toggleMap.put(SCREENSHOT_TOGGLE, ScreenshotToggle.class);
+            toggleMap.put(CUSTOM_TOGGLE, CustomToggle.class);
             // toggleMap.put(BT_TETHER_TOGGLE, null);
         }
         return toggleMap;
@@ -232,8 +236,20 @@ public class ToggleManager {
                                 params);
             }
 
-            for (LinearLayout row : rows)
+            for (LinearLayout row : rows) {
+                if (row == rows.get(rows.size() - 1)) { // last row - need spacers
+                    if (row.getChildCount() < widgetsPerRow) {
+                        View spacer_front = new View(mContext);
+                        View spacer_end = new View(mContext);
+                        spacer_front.setBackgroundResource(R.drawable.qs_tile_background);
+                        spacer_end.setBackgroundResource(R.drawable.qs_tile_background);
+                        params.weight = 2f; // change weight so spacers grow
+                        row.addView(spacer_front,0, params);
+                        row.addView(spacer_end, params);
+                    }
+                }
                 mContainers[STYLE_TRADITIONAL].addView(row);
+            }
 
             mContainers[STYLE_TRADITIONAL].setVisibility(View.VISIBLE);
         }
